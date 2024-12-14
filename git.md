@@ -18,3 +18,6 @@
 
 # Push all the code to github
 * git push -u origin master
+
+# .gitignore
+*type the name of files with extension to ignore them for pushing
