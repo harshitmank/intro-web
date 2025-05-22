@@ -1,0 +1,10 @@
+#w cat commands
+
+#cat f1.txt => show the output of the file f1.txt
+#cat f1.txt f2.txt => show content of both files together
+
+#Flags
+
+#-s=>this flag is used to remove extra spaces from output
+#-b=>this flag is used to add a number line on non empty lines
+#-n =>this flag is used to add a number on all the line including empty lines  

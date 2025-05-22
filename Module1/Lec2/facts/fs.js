@@ -9,3 +9,5 @@ let f1kadata=fsKaObject.readFileSync("./f1.txt");
 console.log(f1kadata+ "");
 
 fsKaObject.writeFileSync("index.txt","Hello world!!!");
+
+fsKaObject.writeFileSync("../activity/activity.js","dasdasdas");

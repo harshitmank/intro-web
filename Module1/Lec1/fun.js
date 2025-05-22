@@ -16,7 +16,7 @@ fun();
 function toBePassedAsArgument(){
     console.log("I am passed as argument");
 }
-
+ 
 function highOrderFunction(cd){
     cd();
 }
