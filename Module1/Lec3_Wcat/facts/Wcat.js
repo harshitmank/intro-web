@@ -12,7 +12,7 @@ function applySFlag(f1kadata){
     let Emptyincluded=false;
     let removedSpaces=[];
 
-    let splittedData=f1kadata.split("\r\n")
+    let splittedData=f1kadata.split("\r\n");
     // [ 'Hey I am f1', '', '', '', '', '', 'Bye I am f1' ]
     
     for(let i=0;i<splittedData.length;i++){
@@ -33,5 +33,36 @@ function applySFlag(f1kadata){
     console.log(removedSpacesString);
 
 }
+// applySFlag(f1kadata);
 
-applySFlag(f1kadata);
+// -b flag-->add line number to non empty lines
+function applyBFlag(f1kadata){
+    let count=1;
+    let splittedData=f1kadata.split("\r\n");
+    
+    for(let i=0;i<splittedData.length;i++){
+        if(splittedData[i]!= ''){
+            splittedData[i] = `${count}. ${splittedData[i]}`;
+            count++;
+        }
+    }
+    console.log(splittedData);
+    let BflagString=splittedData.join("\r\n");
+    console.log(BflagString);
+}
+// applyBFlag(f1kadata);
+
+function applyNFlag(f1kadata){
+    let count=1;
+    let splittedData=f1kadata.split("\r\n");
+    
+    for(let i=0;i<splittedData.length;i++){
+        splittedData[i] = `${count}. ${splittedData[i]}`;
+        count++;
+    }
+    console.log(splittedData);
+    let BflagString=splittedData.join("\r\n");
+    console.log(BflagString);
+}
+
+applyNFlag(f1kadata);
