@@ -1,2 +1,17 @@
+let fs=require("fs");
 let files=["../f1.txt","../f2.txt","../f3.txt"];
 
+let f1kaPendingPromise=fs.promises.readFile(files[0]);
+
+for(let i=1;i<files.length;i++){
+
+    f1kaPendingPromise=f1kaPendingPromise.then(function(data){
+        console.log(data+"");
+        let nextFilePromise=fs.promises.readFile(files[i]);
+        return nextFilePromise;
+    })
+}
+
+f1kaPendingPromise.then(function(data){
+    console.log(data);
+})
