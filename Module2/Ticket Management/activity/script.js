@@ -1,10 +1,10 @@
-let allFilters=document.querySelector('.filter');
-let ticketContainer=document.querySelector('.tickets-container');
+let allFilters=document.querySelectorAll('.filter');
+
 let openModal=document.querySelector('.open-modal');
 let closeModal=document.querySelector('.close-modal');
 
-for(let i=0;i<allFilters.length;i++){
-    allFilters[i].addEventListner("click",selectFilter);
+for (let i = 0; i < allFilters.length; i++) {
+  allFilters[i].addEventListener("click", selectFilter);
 }
 
 let ticketModalOpen=false;
@@ -14,14 +14,23 @@ openModal.addEventListener('click',openTicketModal);
 closeModal.addEventListener('click',closeTicketModal);
 
 
-function selectFilter(e){
-    let filterSelected=e.target.classList[1];
-
-    if(ticketContainer.classList.length>1){
-        ticketContainer.classList.remove(ticketContainer.classList[1])
+function selectFilter(e) {
+  if(e.target.classList.contains("active-filter")){
+    // ticket append are on basis of some filter
+    e.target.classList.remove("active-filter");
+    // append all tickets
+    ticketContainer.innerHTML = "";
+    loadTickets();
+  }
+  else{
+    if(document.querySelector(".active-filter")){
+      document.querySelector(".active-filter").classList.remove("active-filter");
     }
-
-    ticketContainer.classList.add(filterSelected);
+    e.target.classList.add("active-filter");
+    ticketContainer.innerHTML = "";
+    let filterClicked = e.target.classList[1];
+    loadSelectedTickets(filterClicked);
+  }
 }
 
 function openTicketModal(e){
@@ -40,6 +49,7 @@ function openTicketModal(e){
         </div>`;
     document.querySelector("body").append(ticketModal);
     ticketModalOpen=true;
+    isTextTyped=false;
 
     let ticketTextDiv= ticketModal.querySelector('.ticket-text');
     ticketTextDiv.addEventListener("keypress",handleKeyPress);
@@ -66,8 +76,21 @@ function closeTicketModal(e){
 }
 
 function handleKeyPress(e){
+    if(e.key=='Enter' && isTextTyped && e.target.textContent!=''){
+        let filterSelected=document.querySelector('.selected-filter').classList[1];
+        let ticketId=uuid();
+
+        let ticketInfoObject={ticketFilter:filterSelected ,ticketValue:e.target.textContent,ticketId:ticketId};
+        appendTicket(ticketInfoObject);
+        closeModal.click();
+        saveTicketToDB(ticketInfoObject);
+    }
+    
     if(!isTextTyped){   
         isTextTyped=true;
         e.target.textContent="";
     }
+
 }
+
+
