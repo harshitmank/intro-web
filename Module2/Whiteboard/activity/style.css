@@ -1,0 +1,163 @@
+* {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+    /* overflow: hidden; */
+}
+
+.tools-container {
+    height: 100px;
+    /* background-color: aquamarine; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tools-content {
+    height: 70%;
+    width: 70%;
+    /* border: 1px solid; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: aliceblue;
+    border-radius: 10px;
+}
+
+.tool {
+    height: 54%;
+    width: 10%;
+    position: relative;
+}
+
+.tool img {
+    height: 100%;
+    width: 100%;
+}
+
+.drawing-container {
+}
+
+#canvas {
+    /* background-color: aqua; */
+}
+
+.sticky {
+    position: absolute;
+    top: 30vh;
+    height: 200px;
+    width: 250px;
+    /* background: bisque; */
+    left: 40vh;
+}
+
+.sticky-header {
+    height: 13%;
+    background: lightgoldenrodyellow;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.sticky-header div {
+    height: 70%;
+    width: 8%;
+    margin-right: 10px;
+    border-radius: 50px;
+}
+
+.minimize {
+    background: lightskyblue;
+}
+
+.close {
+    background: lightcoral;
+}
+
+.sticky-content {
+    height: 87%;
+    background: lightsteelblue;
+    outline: none;
+    padding: 10px;
+}
+
+.sticky-image-div {
+    height: 87%;
+}
+
+.sticky-image {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.active-tool {
+    /* transform: scale(1.2); */
+}
+
+.fade {
+    opacity: .4;
+}
+
+.tool-options {
+    height: 100px;
+    width: 100px;
+    background: aliceblue;
+    position: absolute;
+    top: 60px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 2px;
+}
+
+.hide {
+    display: none;
+}
+
+.pen-size{
+}
+
+.pen-size input {
+    width: 100%;
+}
+
+
+.eraser-size input{
+    width: 100%;
+}
+
+.pen-colors{
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.pen-colors div{
+    height: 15px;
+    width: 14px;
+    border-radius: 50px;
+}
+
+.black{
+    background: black;
+}
+
+.yellow{
+    background: yellow;
+}
+
+.blue{
+    background: blue;
+}
+
+.green{
+    background: green;
+}
+
+.red{
+    background: red;
+}
+
+ 
