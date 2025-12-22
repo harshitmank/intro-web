@@ -6,6 +6,12 @@ let filters=document.querySelectorAll('.filter');
 let filterSelected='none';
 let zoomIn=document.querySelector('.zoomIn');
 let zoomOut=document.querySelector('.zoomOut');
+let galleryBtn=document.querySelector('.gallery-btn');
+
+galleryBtn.addEventListener('click',function(){
+    window.location.assign('gallery.html');
+})
+
 let minZoom=1;
 let maxZoom=3;
 let currentZoom=1;
@@ -25,63 +31,21 @@ let recordingState=false;
     mediaRecorder.ondataavailable=function(e){
         // console.log(e.data);
         let videoObject=new Blob([e.data],{type:'video/mp4'});
-        // console.log(videoObject);
-        let videoURL=URL.createObjectURL(videoObject);
-        let aTag=document.createElement('a');
-        aTag.download=`Video${Date.now()}.mp4`
-        aTag.href=videoURL;
-        aTag.click();
+        // // console.log(videoObject);
+        // let videoURL=URL.createObjectURL(videoObject);
+        // let aTag=document.createElement('a');
+        // aTag.download=`Video${Date.now()}.mp4`
+        // aTag.href=videoURL;
+        // aTag.click();
+        addMedia(videoObject,'video');
     }
 
     mediaRecorder.onstop=function(){
         console.log('inside of stop');
     }
 
-    recordButton.addEventListener('click',function(){
-        if(recordingState){
-            //alreading recording
-            mediaRecorder.stop();
-            recordingState=false;
-            recordButton.classList.remove('animate-record');
-        }
-        else{
-            mediaRecorder.start();
-            recordingState=true;
-            recordButton.classList.add('animate-record');
-        }
-    })
-
-    capturePhoto.addEventListener('click',function(){
-        capturePhoto.classList.add('animate-capture');
-
-        setTimeout(function(){
-            capturePhoto.classList.remove('animate-capture');
-        },1000);
-
-        let canvas=document.createElement('canvas');
-        canvas.width = videoElement.videoWidth;
-        canvas.height = videoElement.videoHeight;
-        let ctx=canvas.getContext('2d');
-        
-        if(currentZoom!=1){
-            ctx.translate(canvas.width/2,canvas.height/2);
-            ctx.scale(currentZoom,currentZoom);
-            ctx.translate(-canvas.width/2,-canvas.height/2);
-        }
-        
-        ctx.drawImage(videoElement,0,0);
-
-        if(filterSelected !='none'){
-            ctx.fillStyle=filterSelected;
-            ctx.fillRect(0,0,canvas.width,canvas.height);
-        }
-
-        let aTag=document.createElement('a');
-        aTag.download=`Image${Date.now()}.jpg`;
-        aTag.href=canvas.toDataURL('image/jpg');
-        aTag.click();
-        
-    })
+    recordButton.addEventListener('click',recordMediaFun);
+    capturePhoto.addEventListener('click',capturePhotoFun);
 
 })();
 
@@ -130,3 +94,67 @@ zoomOut.addEventListener('click',function(){
     currentZoom=currentZoom-.1;
     videoElement.style.transform=`scale(${currentZoom})`;
 })
+
+function capturePhotoFun(){
+    capturePhoto.classList.add('animate-capture');
+
+    setTimeout(function(){
+        capturePhoto.classList.remove('animate-capture');
+    },1000);
+
+    let canvas=document.createElement('canvas');
+    canvas.width = videoElement.videoWidth;
+    canvas.height = videoElement.videoHeight;
+    let ctx=canvas.getContext('2d');
+        
+    if(currentZoom!=1){
+        ctx.translate(canvas.width/2,canvas.height/2);
+        ctx.scale(currentZoom,currentZoom);
+        ctx.translate(-canvas.width/2,-canvas.height/2);
+    }
+        
+    ctx.drawImage(videoElement,0,0);
+
+    if(filterSelected !='none'){
+        ctx.fillStyle=filterSelected;
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+    }
+
+    //download canvas as image
+    // let aTag=document.createElement('a');
+    // aTag.download=`Image${Date.now()}.jpg`;
+    // aTag.href=canvas.toDataURL('image/jpg');
+    // aTag.click();        
+
+    //save image to DB
+    let canvasURL=canvas.toDataURL('image.jpg')
+    addMedia(canvasURL,'photo');
+    
+}
+
+function recordMediaFun(){
+    if(recordingState){
+        //alreading recording
+        mediaRecorder.stop();
+        recordingState=false;
+        recordButton.classList.remove('animate-record');
+    }
+    else{
+        mediaRecorder.start();
+        recordingState=true;
+        recordButton.classList.add('animate-record');
+    }
+}
+
+function addMedia(mediaURL,mediaType) {
+    //   db me media add hojaega
+    let txnObject = db.transaction("Media", "readwrite"); // start transaction on mediaTable
+    let mediaTable = txnObject.objectStore("Media"); // this will get access to mediaTable
+
+    mediaTable.add({ mid: Date.now(), type: mediaType,url:mediaURL }); // it will add this object in mediaTable or mediaStore
+
+    txnObject.onerror = function(e){
+        console.log("txn failed");
+        console.log(e);
+    }
+}

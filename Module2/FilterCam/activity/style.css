@@ -31,8 +31,8 @@ video {
 }
 
 .controls>div {
-    width: 70%;
-    height: 20%;
+    width: 50%;
+    height: 15%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -129,6 +129,15 @@ video {
 .fas{
     font-size: 1.5rem;
     color: white;
+}
+
+.gallery-btn{
+    background-color: black;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    border: 2px solid white;
 }
 
 @keyframes scaleInScaleOut {
