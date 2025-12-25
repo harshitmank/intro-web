@@ -4,6 +4,7 @@ let leftCol=document.querySelector('.left-col');
 let address=document.querySelector('#address')
 let allCells=document.querySelectorAll('.cell');
 let formulaInput=document.querySelector('#formula');
+let lastSelectedCell;
 
 cellsContainer.addEventListener('scroll',function(e){
     let topOffset=e.target.scrollTop;
@@ -19,36 +20,73 @@ formulaInput.addEventListener('blur',function(e){
     let formula=e.target.value;
     if(formula){
         let cellObject = getCellObjectFromElement(lastSelectedCell);
+        if(cellObject.formula !=formula){
+            deleteFormula(cellObject);
+        }
         let calculatedValue = solveFormula(formula, cellObject);
         lastSelectedCell.textContent=calculatedValue;
         cellObject.value=calculatedValue;
         cellObject.formula=formula;
+
+        //childrens update
+        updateChildrens(cellObject.childrens);
     }
 })
-
-for(let i=0;i<allCells.length;i++){
-    allCells[i].addEventListener('click',function(e){
-        let cellObject=getCellObject(e.target);
-        address.value=cellObject.name;
-        formulaInput.value=cellObject.formula;
-    })
-
-
-    allCells[i].addEventListener('blur',function(e){
-        lastSelectedCell=e.target;
-        let cellValueFromUI=e.target.textContent;
-        //cellObject ki value update!!
-        if(cellValueFromUI){
-            let cellObject=getCellObject(e.target);
-            cellObject.value=cellValueFromUI;
-            
-            //update childrens of the current updated cell
-            updateChildrens(cellObject.childrens);
-        }
-    })
+function attachClickandBlurEventOnCell(){
+    for(let i=0;i<allCells.length;i++){
+        allCells[i].addEventListener('click',function(e){
+            let cellObject=getCellObjectFromElement(e.target);
+            address.value=cellObject.name;
+            formulaInput.value=cellObject.formula; 
+        })
+    
+    
+        allCells[i].addEventListener('blur',function(e){
+            lastSelectedCell=e.target;
+            let cellValueFromUI=e.target.textContent;
+            //cellObject ki value update!!
+            if(cellValueFromUI){
+                let cellObject=getCellObjectFromElement(e.target);
+                //check if the given cell has a formula on it
+                if(cellObject.formula && cellValueFromUI!=cellObject.value){
+                    deleteFormula(cellObject);
+                    formulaInput.value="";
+                }
+                
+                cellObject.value=cellValueFromUI;   
+                //update childrens of the current updated cell
+                updateChildrens(cellObject.childrens);
+                
+                let rowId=lastSelectedCell.getAttribute('rowid');
+                let colId=lastSelectedCell.getAttribute('colid');
+                if(!cellObject.visited){
+                    visitedCells.push({rowId,colId});
+                    cellObject.visited=true;
+                }
+            }
+        });
+    }
 }
 
-function getCellObject(element){
+attachClickandBlurEventOnCell();
+
+function deleteFormula(cellObject){
+    cellObject.formula='';
+    for(let i=0;i<cellObject.parents.length;i++){
+        let parentName=cellObject.parents[i];
+        let parentCellObject=getCellObjectFromName(parentName);
+        let updatedChildrens=parentCellObject.childrens.filter(function(childName){
+            if(childName==cellObject.name){
+                return false;
+            }
+            return true;
+        })
+        parentCellObject.childrens=updatedChildrens;
+    }
+    cellObject.parents=[];
+}
+
+function getCellObjectFromElement(element){
     let rowId=element.getAttribute("rowid");
     let colId=element.getAttribute('colid');
     return db[rowId][colId]; 
@@ -73,6 +111,7 @@ function solveFormula(formula, selfCellObject) {
       if (selfCellObject) {
         //add yourself as a child of parentCellObject
         parentCellObject.childrens.push(selfCellObject.name);
+        selfCellObject.parents.push(parentCellObject.name);
       }
 
       formula = formula.replace(fComp, value);
@@ -81,12 +120,6 @@ function solveFormula(formula, selfCellObject) {
   // ( 10 + 20 ) => infix evaluation
   let calculatedValue = eval(formula);
   return calculatedValue;
-}
-
-function getCellObjectFromElement(element) {
-  let rowId = element.getAttribute("rowid");
-  let colId = element.getAttribute("colid");
-  return db[rowId][colId];
 }
 
 function getCellObjectFromName(name) {
