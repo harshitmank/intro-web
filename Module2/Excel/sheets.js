@@ -59,8 +59,22 @@ function switchSheet(currentSheet) {
     //set UI optimized
     for(let i=0;i<visitedCells.length;i++){
         let {rowId,colId}=visitedCells[i];
-        let idx=Number(rowId)*100+Number(colId);
+        let idx=Number(rowId)*26+Number(colId);
         allCells[idx].textContent=db[rowId][colId].value;
+        
+        let cellObject = db[rowId][colId];
+        let { bold, underline, italic } = cellObject.fontStyles;
+        if (bold) {
+            allCells[i].style.fontWeight = "bold";
+        }
+        if (underline) {
+            allCells[i].style.textDecoration = "underline";
+        }
+        if (italic) {
+            allCells[i].style.fontStyle = "italic";
+        }
+        let textAlign = cellObject.textAlign;
+        allCells[i].style.textAlign = textAlign;
     }
 }
 
@@ -74,9 +88,17 @@ function attachEventListeners(){
 }
 
 function cleanUI(){
+    let allActiveMenus = document.querySelectorAll(".active-menu");
+    if (allActiveMenus) {
+        for (let i = 0; i < allActiveMenus.length; i++) {
+            allActiveMenus[i].classList.remove("active-menu");
+        }
+    }
+
     for(let i=0;i<visitedCells.length;i++){
         let {rowId,colId}=visitedCells[i];
-        let idx=Number(rowId)*100+Number(colId);
+        let idx=Number(rowId)*26+Number(colId);
         allCells[idx].innerHTML="";
+        allCells[idx].style= '';
     }
 }

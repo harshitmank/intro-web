@@ -40,7 +40,9 @@ function initDB(){
         formula:"",
         childrens:[],
         parents:[],
-        visited:false
+        visited:false,
+        fontStyles:{bold:false, italic:false,underline:false},
+        textAlign :'left'
       }
       row.push(cellObject);
     }
